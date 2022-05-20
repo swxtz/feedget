@@ -7,6 +7,7 @@ import ideaImageUrl from '../../assests/idea.svg';
 import thoughtImageUrl from '../../assests/thought.svg';
 import { FeedbackTypeStep } from "./Steps/FeedbackTypeStep";
 import { FeedbackContentStep } from "./Steps/FeedbackContentStep";
+import { FeedbackSuccessStep } from "./Steps/FeedbackSuccessStep";
 
 
 export const feedbackTypes = {
@@ -37,22 +38,29 @@ export type FeedbackType = keyof typeof feedbackTypes;
 
 export function WidgetForm() {
     const [feedbackType, setFeedbackType] = useState<FeedbackType | null>(null) 
-
+    const [feedbackSend ,setFeedbackSend] =useState(false);
+ 
     function handleRestartFeedback() {
+        setFeedbackSend(false);
         setFeedbackType(null);
     }
     
     return (
         <div className="bg-zinc-900 p-4 relative rounded-2xl mb-4 flex flex-col items-center shadow-lg w-[calc(100vw-2rem)] md:w-auto">
-            
-
-            {! feedbackType ? (
+            { feedbackSend ? (
+                <FeedbackSuccessStep onFeedbackRestartRequested={handleRestartFeedback} />
+            ) : (
+                <>
+                {! feedbackType ? (
                 <FeedbackTypeStep onFeedbackTypeChanged={setFeedbackType} />    
             ) : (
-               <FeedbackContentStep 
+               <FeedbackContentStep  
                 feedbackType={feedbackType}
                 onFeedbackRestartRequested={handleRestartFeedback}
+                onFeedbackSend={() => setFeedbackSend(true)}
                  />
+            )}
+                </>
             )}
 
             <footer className="text-xs text-neutral-400">
